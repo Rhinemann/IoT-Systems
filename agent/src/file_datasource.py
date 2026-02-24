@@ -204,9 +204,14 @@ class FileDatasource:
         if len(row) < 3:
             raise ValueError(f"Accelerometer row must have 3 values (x,y,z). Got: {row}")
 
-        x = int(row[0])
-        y = int(row[1])
-        z = int(row[2])
+        try:
+            x = int(row[0])
+            y = int(row[1])
+            z = int(row[2])
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid accelerometer values (expected integers): {row}"
+            ) from e
 
         return Accelerometer(x=x, y=y, z=z)
 
