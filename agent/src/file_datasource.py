@@ -14,7 +14,6 @@ import config
 
 class FileDatasource:
 
-
     def __init__(self, accelerometer_filename: str, gps_filename: str) -> None:
         self.accelerometer_filename = accelerometer_filename
         self.gps_filename = gps_filename
@@ -201,20 +200,13 @@ class FileDatasource:
         return True, None
 
     @staticmethod
-    def _parse_int(s: str) -> int:
-        return int(s)
-
-    @staticmethod
     def _parse_acc(row: List[str]) -> Accelerometer:
         if len(row) < 3:
             raise ValueError(f"Accelerometer row must have 3 values (x,y,z). Got: {row}")
 
-        try:
-            x = int(row[0])
-            y = int(row[1])
-            z = int(row[2])
-        except ValueError as e:
-            raise ValueError(f"Invalid accelerometer values (expected integers): {row}") from e
+        x = int(row[0])
+        y = int(row[1])
+        z = int(row[2])
 
         return Accelerometer(x=x, y=y, z=z)
 
