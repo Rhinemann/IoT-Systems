@@ -68,7 +68,7 @@ class FileDatasource:
         return AggregatedData(
             accelerometer=acc,
             gps=gps,
-            time=datetime.utcnow(),
+            timestamp=datetime.utcnow(),
             user_id=config.USER_ID,
         )
 
