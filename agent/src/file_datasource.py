@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import csv
 import time
 from datetime import datetime
@@ -28,9 +26,6 @@ class FileDatasource:
         # one-row buffers (supports CSVs with or without header)
         self._acc_buf: Optional[List[str]] = None
         self._gps_buf: Optional[List[str]] = None
-
-        self._acc_has_header: Optional[bool] = None
-        self._gps_has_header: Optional[bool] = None
 
     def startReading(self, *args, **kwargs):
         """Must be called before read()"""
@@ -80,16 +75,17 @@ class FileDatasource:
         self._acc_f = open(self.accelerometer_filename, "r", newline="", encoding="utf-8")
         self._gps_f = open(self.gps_filename, "r", newline="", encoding="utf-8")
 
-        self._acc_reader = csv.reader(self._acc_f)
-        self._gps_reader = csv.reader(self._gps_f)
+        self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
+        self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
 
         self._acc_buf = None
         self._gps_buf = None
 
-        self._acc_has_header, self._acc_buf = self._detect_header_and_buffer(
+        # detect header / buffer first data row (we only need the buffered row)
+        _, self._acc_buf = self._detect_header_and_buffer(
             self._acc_reader, expected_cols=3, header_tokens=("x", "y", "z")
         )
-        self._gps_has_header, self._gps_buf = self._detect_header_and_buffer(
+        _, self._gps_buf = self._detect_header_and_buffer(
             self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
         )
 
@@ -107,15 +103,13 @@ class FileDatasource:
         self._gps_reader = None
         self._acc_buf = None
         self._gps_buf = None
-        self._acc_has_header = None
-        self._gps_has_header = None
 
     def _rewind_acc(self) -> None:
         if self._acc_f is None:
             raise RuntimeError("Accelerometer file is not open.")
         self._acc_f.seek(0)
-        self._acc_reader = csv.reader(self._acc_f)
-        self._acc_has_header, self._acc_buf = self._detect_header_and_buffer(
+        self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
+        _, self._acc_buf = self._detect_header_and_buffer(
             self._acc_reader, expected_cols=3, header_tokens=("x", "y", "z")
         )
 
@@ -123,8 +117,8 @@ class FileDatasource:
         if self._gps_f is None:
             raise RuntimeError("GPS file is not open.")
         self._gps_f.seek(0)
-        self._gps_reader = csv.reader(self._gps_f)
-        self._gps_has_header, self._gps_buf = self._detect_header_and_buffer(
+        self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
+        _, self._gps_buf = self._detect_header_and_buffer(
             self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
         )
 
@@ -144,7 +138,6 @@ class FileDatasource:
                 self._rewind_acc()
                 continue
 
-            row = [c.strip() for c in row]
             if not row or not any(row):
                 continue
 
@@ -166,7 +159,6 @@ class FileDatasource:
                 self._rewind_gps()
                 continue
 
-            row = [c.strip() for c in row]
             if not row or not any(row):
                 continue
 
@@ -182,7 +174,6 @@ class FileDatasource:
             first = next(rdr, None)
             if first is None:
                 return False, None
-            first = [c.strip() for c in first]
             if first and any(first):
                 break
 
@@ -209,9 +200,7 @@ class FileDatasource:
             y = int(row[1])
             z = int(row[2])
         except ValueError as e:
-            raise ValueError(
-                f"Invalid accelerometer values (expected integers): {row}"
-            ) from e
+            raise ValueError(f"Invalid accelerometer values (expected integers): {row}") from e
 
         return Accelerometer(x=x, y=y, z=z)
 
