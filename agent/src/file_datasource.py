@@ -204,14 +204,7 @@ class FileDatasource:
 
     @staticmethod
     def _parse_int16(s: str) -> int:
-        """
-        Parse a signed 16-bit integer from string representation.
-        The file is expected to contain integer literals (e.g. "123", "-42").
-        """
-        v = int(s)
-        if not FileDatasource.INT16_MIN <= v <= FileDatasource.INT16_MAX:
-            raise ValueError(f"Value {v} is out of signed 16-bit range")
-        return v
+        return int(s)
 
     @staticmethod
     def _parse_acc(row: List[str]) -> Accelerometer:
