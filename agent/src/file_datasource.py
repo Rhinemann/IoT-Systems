@@ -14,6 +14,9 @@ import config
 
 class FileDatasource:
 
+    INT16_MIN = -32768
+    INT16_MAX = 32767
+
     def __init__(self, accelerometer_filename: str, gps_filename: str) -> None:
         self.accelerometer_filename = accelerometer_filename
         self.gps_filename = gps_filename
@@ -200,12 +203,23 @@ class FileDatasource:
         return True, None
 
     @staticmethod
+    def _parse_int16(s: str) -> int:
+        """
+        Parse a signed 16-bit integer from string representation.
+        The file is expected to contain integer literals (e.g. "123", "-42").
+        """
+        v = int(s)
+        if not FileDatasource.INT16_MIN <= v <= FileDatasource.INT16_MAX:
+            raise ValueError(f"Value {v} is out of signed 16-bit range")
+        return v
+
+    @staticmethod
     def _parse_acc(row: List[str]) -> Accelerometer:
         if len(row) < 3:
             raise ValueError(f"Accelerometer row must have 3 values (x,y,z). Got: {row}")
-        x = int(float(row[0]))
-        y = int(float(row[1]))
-        z = int(float(row[2]))
+        x = FileDatasource._parse_int16(row[0])
+        y = FileDatasource._parse_int16(row[1])
+        z = FileDatasource._parse_int16(row[2])
         return Accelerometer(x=x, y=y, z=z)
 
     @staticmethod
