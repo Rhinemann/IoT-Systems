@@ -126,12 +126,13 @@ async def send_data_to_subscribers(user_id: int, data):
 
 
 @app.post("/processed_agent_data/")
-async def create_processed_agent_data(data: List[ProcessedAgentData]):
+async def create_processed_agent_data(data: List[ProcessedAgentData], user_id: int = Body(..., embed=True)):
     session = SessionLocal()
     try:
         created_data = [
             {
                 "road_state": item.road_state,
+                "user_id": user_id,
                 "x": item.agent_data.accelerometer.x,
                 "y": item.agent_data.accelerometer.y,
                 "z": item.agent_data.accelerometer.z,
@@ -147,7 +148,7 @@ async def create_processed_agent_data(data: List[ProcessedAgentData]):
         session.commit()
 
         for record in created_records:
-            await send_data_to_subscribers(jsonable_encoder(record))
+            await send_data_to_subscribers(user_id, jsonable_encoder(record))
         return created_records
     except Exception as err:
         session.rollback()
