@@ -23,10 +23,6 @@ class FileDatasource:
 
         self._started = False
 
-        # one-row buffers (supports CSVs with or without header)
-        self._acc_has_header: Optional[bool] = None
-        self._gps_has_header: Optional[bool] = None
-
     def startReading(self, *args, **kwargs):
         """Must be called before read()"""
         if self._started:
@@ -50,8 +46,8 @@ class FileDatasource:
         if not self._started:
             raise RuntimeError("Datasource is not started. Call startReading() before read().")
 
-        acc_row = self._get_next_row(self._acc_reader)
-        gps_row = self._get_next_row(self._gps_reader)
+        acc_row = self._get_next_row(self._acc_reader, source="acc")
+        gps_row = self._get_next_row(self._gps_reader, source="gps")
 
         acc = self._parse_acc(acc_row)
         gps = self._parse_gps(gps_row)
@@ -78,10 +74,6 @@ class FileDatasource:
         self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
         self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
 
-        self._acc_has_header = None
-        self._gps_has_header = None
-
-        # detect header / buffer first data row (we only need the buffered row)
         self._rewind_acc()
         self._rewind_gps()
 
@@ -103,22 +95,16 @@ class FileDatasource:
             raise RuntimeError("Accelerometer file is not open.")
         self._acc_f.seek(0)
         self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
-        next(self._acc_reader)  # Skip header row
-        _ = self._detect_header_and_buffer(
-            self._acc_reader, expected_cols=3, header_tokens=("x", "y", "z")
-        )
+        next(self._acc_reader, None)  # skip header row
 
     def _rewind_gps(self) -> None:
         if self._gps_f is None:
             raise RuntimeError("GPS file is not open.")
         self._gps_f.seek(0)
         self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
-        next(self._gps_reader)  # Skip header row
-        _ = self._detect_header_and_buffer(
-            self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
-        )
+        next(self._gps_reader, None)  # skip header row
 
-    def _get_next_row(self, reader) -> List[str]:
+    def _get_next_row(self, reader, source: str) -> List[str]:
         """Get the next valid row from the reader."""
         if reader is None:
             raise RuntimeError("Reader is not initialized.")
@@ -127,39 +113,18 @@ class FileDatasource:
             row = next(reader, None)
             if row is None:
                 # EOF -> rewind & continue
-                self._rewind_acc() if reader == self._acc_reader else self._rewind_gps()
+                if source == "acc":
+                    self._rewind_acc()
+                    reader = self._acc_reader
+                else:
+                    self._rewind_gps()
+                    reader = self._gps_reader
                 continue
 
             if not row or not any(cell.strip() for cell in row):
                 continue
 
             return row
-
-    @staticmethod
-    def _detect_header_and_buffer(
-        rdr: csv.reader, expected_cols: int, header_tokens: tuple[str, ...]
-    ) -> tuple[bool, Optional[List[str]]]:
-
-        first = None
-        while True:
-            first = next(rdr, None)
-            if first is None:
-                return False, None
-            if first and any(first):
-                break
-
-        norm = [c.strip().lower() for c in first]
-
-        # Header if it contains the expected tokens
-        if all(tok in norm for tok in header_tokens):
-            return True, None
-
-        # If first row is numeric-like and has enough columns => it's data (buffer it back)
-        if len(norm) >= expected_cols and all(FileDatasource._is_number(x) for x in norm[:expected_cols]):
-            return False, first
-
-        # Otherwise treat it as header-ish (skip it)
-        return True, None
 
     @staticmethod
     def _parse_acc(row: List[str]) -> Accelerometer:
@@ -182,11 +147,3 @@ class FileDatasource:
         lon = float(row[0])
         lat = float(row[1])
         return Gps(longitude=lon, latitude=lat)
-
-    @staticmethod
-    def _is_number(s: str) -> bool:
-        try:
-            float(s)
-            return True
-        except Exception:
-            return False
