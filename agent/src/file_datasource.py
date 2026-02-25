@@ -50,8 +50,8 @@ class FileDatasource:
         if not self._started:
             raise RuntimeError("Datasource is not started. Call startReading() before read().")
 
-        acc_row = self._next_acc_row()
-        gps_row = self._next_gps_row()
+        acc_row = self._get_next_row(self._acc_reader, self._acc_buf)
+        gps_row = self._get_next_row(self._gps_reader, self._gps_buf)
 
         acc = self._parse_acc(acc_row)
         gps = self._parse_gps(gps_row)
@@ -122,44 +122,24 @@ class FileDatasource:
             self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
         )
 
-    def _next_acc_row(self) -> List[str]:
-        if self._acc_reader is None:
-            raise RuntimeError("Accelerometer reader is not initialized.")
+    def _get_next_row(self, reader, buffer) -> List[str]:
+        """Get the next valid row from the reader or buffer."""
+        if reader is None:
+            raise RuntimeError("Reader is not initialized.")
 
         while True:
-            if self._acc_buf is not None:
-                row = self._acc_buf
-                self._acc_buf = None
+            if buffer is not None:
+                row = buffer
+                buffer = None
             else:
-                row = next(self._acc_reader, None)
+                row = next(reader, None)
 
             if row is None:
                 # EOF -> rewind & continue
-                self._rewind_acc()
+                self._rewind_acc() if reader == self._acc_reader else self._rewind_gps()
                 continue
 
-            if not row or not any(row):
-                continue
-
-            return row
-
-    def _next_gps_row(self) -> List[str]:
-        if self._gps_reader is None:
-            raise RuntimeError("GPS reader is not initialized.")
-
-        while True:
-            if self._gps_buf is not None:
-                row = self._gps_buf
-                self._gps_buf = None
-            else:
-                row = next(self._gps_reader, None)
-
-            if row is None:
-                # EOF -> rewind & continue
-                self._rewind_gps()
-                continue
-
-            if not row or not any(row):
+            if not row or not any(cell.strip() for cell in row):
                 continue
 
             return row
@@ -177,7 +157,7 @@ class FileDatasource:
             if first and any(first):
                 break
 
-        norm = [c.lower() for c in first]
+        norm = [c.strip().lower() for c in first]
 
         # Header if it contains the expected tokens
         if all(tok in norm for tok in header_tokens):
