@@ -109,6 +109,7 @@ class FileDatasource:
             raise RuntimeError("Accelerometer file is not open.")
         self._acc_f.seek(0)
         self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
+        next(self._acc_reader)  # Skip header row
         _, self._acc_buf = self._detect_header_and_buffer(
             self._acc_reader, expected_cols=3, header_tokens=("x", "y", "z")
         )
@@ -118,6 +119,7 @@ class FileDatasource:
             raise RuntimeError("GPS file is not open.")
         self._gps_f.seek(0)
         self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
+        next(self._gps_reader)  # Skip header row
         _, self._gps_buf = self._detect_header_and_buffer(
             self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
         )
