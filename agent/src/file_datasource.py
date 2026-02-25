@@ -104,7 +104,7 @@ class FileDatasource:
         self._acc_f.seek(0)
         self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
         next(self._acc_reader)  # Skip header row
-        self._acc_has_header, _ = self._detect_header_and_buffer(
+        _ = self._detect_header_and_buffer(
             self._acc_reader, expected_cols=3, header_tokens=("x", "y", "z")
         )
 
@@ -114,7 +114,7 @@ class FileDatasource:
         self._gps_f.seek(0)
         self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
         next(self._gps_reader)  # Skip header row
-        self._gps_has_header, _ = self._detect_header_and_buffer(
+        _ = self._detect_header_and_buffer(
             self._gps_reader, expected_cols=2, header_tokens=("longitude", "latitude")
         )
 
