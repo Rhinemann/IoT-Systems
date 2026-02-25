@@ -74,8 +74,10 @@ class FileDatasource:
         self._acc_reader = csv.reader(self._acc_f, skipinitialspace=True)
         self._gps_reader = csv.reader(self._gps_f, skipinitialspace=True)
 
-        self._rewind_acc()
-        self._rewind_gps()
+        # File pointer is already at 0 right after open(), so no need to rewind here.
+        # Skip header row once.
+        next(self._acc_reader, None)
+        next(self._gps_reader, None)
 
     def _close_files(self) -> None:
         for f in (self._acc_f, self._gps_f):
