@@ -37,7 +37,7 @@ def run():
     # Prepare mqtt client
     client = connect_mqtt(config.MQTT_BROKER_HOST, config.MQTT_BROKER_PORT)
     # Prepare datasource
-    datasource = FileDatasource("data/accelerometer.csv", "data/gps.csv")
+    datasource = FileDatasource("data/accelerometer.csv", "data/gps.csv", "data/parking.csv")
     # Infinity publish data
     publish(client, config.MQTT_TOPIC, datasource)
 
