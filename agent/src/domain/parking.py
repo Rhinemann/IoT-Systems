@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from agent.src.domain.gps import Gps
+from domain.gps import Gps
 
 
 @dataclass

@@ -192,5 +192,5 @@ class FileDatasource:
 
         return Parking(
             gps=Gps(longitude=lon, latitude=lat),
-            empty_count=empty_count,
+            empty_count=empty_count
         )
