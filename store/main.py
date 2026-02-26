@@ -1,11 +1,8 @@
-import asyncio
 import json
-from typing import Set, Dict, List, Any
+from typing import Set, Dict, List
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, Body
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import (
-    create_engine,
-    MetaData,
     Table,
     Column,
     Integer,
@@ -13,25 +10,14 @@ from sqlalchemy import (
     Float,
     DateTime,
 )
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import select
-from datetime import datetime
-from pydantic import BaseModel, field_validator
-from config import (
-    POSTGRES_HOST,
-    POSTGRES_PORT,
-    POSTGRES_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
-)
+
+from database import metadata, SessionLocal
+from schemas import ProcessedAgentData, ProcessedAgentDataInDB
 
 # FastAPI app setup
 app = FastAPI()
-# SQLAlchemy setup
-DATABASE_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-engine = create_engine(DATABASE_URL)
-metadata = MetaData()
-# Define the ProcessedAgentData table
+
 processed_agent_data = Table(
     "processed_agent_data",
     metadata,
@@ -45,57 +31,6 @@ processed_agent_data = Table(
     Column("longitude", Float),
     Column("timestamp", DateTime),
 )
-SessionLocal = sessionmaker(bind=engine)
-
-
-# SQLAlchemy model
-class ProcessedAgentDataInDB(BaseModel):
-    id: int
-    road_state: str
-    user_id: int
-    x: float
-    y: float
-    z: float
-    latitude: float
-    longitude: float
-    timestamp: datetime
-
-
-# FastAPI models
-class AccelerometerData(BaseModel):
-    x: float
-    y: float
-    z: float
-
-
-class GpsData(BaseModel):
-    latitude: float
-    longitude: float
-
-
-class AgentData(BaseModel):
-    user_id: int
-    accelerometer: AccelerometerData
-    gps: GpsData
-    timestamp: datetime
-
-    @classmethod
-    @field_validator("timestamp", mode="before")
-    def check_timestamp(cls, value):
-        if isinstance(value, datetime):
-            return value
-        try:
-            return datetime.fromisoformat(value)
-        except (TypeError, ValueError):
-            raise ValueError(
-                "Invalid timestamp format. Expected ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)."
-            )
-
-
-class ProcessedAgentData(BaseModel):
-    road_state: str
-    agent_data: AgentData
-
 
 # WebSocket subscriptions
 subscriptions: Dict[int, Set[WebSocket]] = {}
@@ -163,14 +98,34 @@ async def create_processed_agent_data(data: List[ProcessedAgentData], user_id: i
     response_model=ProcessedAgentDataInDB,
 )
 def read_processed_agent_data(processed_agent_data_id: int):
-    # Get data by id
-    pass
+    session = SessionLocal()
+    try:
+        stmt = select(processed_agent_data).where(
+            processed_agent_data.c.id == processed_agent_data_id
+        )
+        res = session.execute(stmt).fetchone()
+        if not res:
+            raise HTTPException(status_code=404, detail="Not found")
+
+        return dict(res._mapping)
+
+    finally:
+        session.close()
 
 
 @app.get("/processed_agent_data/", response_model=list[ProcessedAgentDataInDB])
 def list_processed_agent_data():
-    # Get list of data
-    pass
+    session = SessionLocal()
+    try:
+        stmt = select(processed_agent_data)
+        res = session.execute(stmt).fetchall()
+        if not res:
+            raise HTTPException(status_code=404, detail="Not found")
+
+        return [dict(r._mapping) for r in res]
+
+    finally:
+        session.close()
 
 
 @app.put(
