@@ -1,8 +1,7 @@
-version: "3.9"
 name: "road_vision__database"
 services:
   postgres_db:
-    image: postgres:latest
+    image: postgres:17
     container_name: postgres_db
     restart: always
     environment:
