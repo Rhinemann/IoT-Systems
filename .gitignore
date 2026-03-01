@@ -1,2 +1,4 @@
 agent/docker/mosquitto/data/
 agent/docker/mosquitto/log/
+
+.idea/
