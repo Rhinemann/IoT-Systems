@@ -34,7 +34,9 @@ services:
 
   store:
     container_name: store
-    build: ..
+    build:
+      context: ../../
+      dockerfile: store/Dockerfile
     depends_on:
       - postgres_db
     restart: always

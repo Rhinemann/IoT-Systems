@@ -1,0 +1,23 @@
+# IDEs
+.idea/
+.vscode/
+.git/
+.gitignore
+.dockerignore
+.DS_Store
+Thumbs.db
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+venv/
+.env
+
+# Logs & Database & Broker data
+*.log
+**/mosquitto/data/
+**/mosquitto/log/
+**/postgres_data/
+**/pgadmin-data/

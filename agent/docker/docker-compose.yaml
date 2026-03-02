@@ -16,7 +16,9 @@ services:
 
   fake_agent:
     container_name: agent
-    build: ../
+    build:
+      context: ../../
+      dockerfile: agent/Dockerfile
     depends_on:
       - mqtt
     environment:
