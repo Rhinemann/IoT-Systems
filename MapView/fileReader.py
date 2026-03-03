@@ -16,7 +16,7 @@ class FileReader:
 
     def startReading(self, *args, **kwargs):
         self.file = open(self.file_path, newline='')
-        self.file_reader = reader(self.file)
+        self.file_reader = reader(self.file, skipinitialspace=True)
         file_header = next(self.file_reader)
         
         self.x_idx = file_header.index('X')
