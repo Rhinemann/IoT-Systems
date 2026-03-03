@@ -1,12 +1,8 @@
 from csv import reader
 import config
-from dataclasses import dataclass
+from domain.accelerometer import Accelerometer
 
-@dataclass
-class Accelerometer:
-  x: int
-  y: int
-  z: int
+
 
 class FileReader:
     def __init__(
