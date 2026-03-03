@@ -24,14 +24,18 @@ class FileReader:
         self.z_idx = file_header.index('Z')
 
     def getNextValue(self):
-        row = next(self.file_reader, None)
-        if row is None:
-            self._rewind_file()
-            row = next(self.file_reader)
-        x = int(row[self.x_idx])
-        y = int(row[self.y_idx])
-        z = int(row[self.z_idx])
-        return Accelerometer(x=x, y=y, z=z)
+        while True:
+            row = next(self.file_reader, None)
+            if row is None:
+                self._rewind_file()
+                continue
+            try:
+                x = int(row[self.x_idx])
+                y = int(row[self.y_idx])
+                z = int(row[self.z_idx])
+                return Accelerometer(x=x, y=y, z=z)
+            except Exception as e:
+                continue
         
     def _rewind_file(self):
         self.file.seek(0)
