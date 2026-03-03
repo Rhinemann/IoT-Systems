@@ -1,0 +1,25 @@
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+
+# Logs
+*.log
+app.log
+
+# Database & Broker data
+**/mosquitto/data/
+**/mosquitto/log/
+**/postgres_data/
+**/pgadmin-data/
+
+# OS specific
+.DS_Store

@@ -17,7 +17,9 @@ services:
 
   edge:
     container_name: edge
-    build: ../
+    build:
+      context: ../../
+      dockerfile: edge/Dockerfile
     depends_on:
       - mqtt
     environment:
