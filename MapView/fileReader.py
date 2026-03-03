@@ -18,6 +18,8 @@ class FileReader:
         file_header = next(self.file_reader)
 
     def stopReading(self, *args, **kwargs):
-        pass
+        if self.file:
+            self.file.close()
+        self.file_reader = None
         
 
