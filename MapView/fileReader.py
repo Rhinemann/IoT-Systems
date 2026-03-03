@@ -1,6 +1,12 @@
 from csv import reader
 import config
+from dataclasses import dataclass
 
+@dataclass
+class Accelerometer:
+  x: int
+  y: int
+  z: int
 
 class FileReader:
     def __init__(
@@ -10,7 +16,7 @@ class FileReader:
         pass
 
     def read(self):
-        return [1, 2, 3]
+        return self.getNextValue()
 
     def startReading(self, *args, **kwargs):
         self.file = open(self.file_path, newline='')
@@ -21,6 +27,13 @@ class FileReader:
         self.y_idx = file_header.index('Y')
         self.z_idx = file_header.index('Z')
 
+    def getNextValue(self):
+        row = next(self.file_reader)
+        x = int(row[self.x_idx])
+        y = int(row[self.y_idx])
+        z = int(row[self.z_idx])
+        return Accelerometer(x=x, y=y, z=z)
+        
     def stopReading(self, *args, **kwargs):
         if self.file:
             self.file.close()
