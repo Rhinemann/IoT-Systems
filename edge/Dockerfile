@@ -3,9 +3,9 @@ FROM python:3.9-slim
 # Set the working directory inside the container
 WORKDIR /app
 # Copy the requirements.txt file and install dependencies
-COPY requirements.txt .
+COPY edge/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 # Copy the entire application into the container
-COPY . .
+COPY edge/. .
 # Run the main.py script inside the container when it starts
 CMD ["python", "main.py"]
