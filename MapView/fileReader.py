@@ -14,9 +14,10 @@ class FileReader:
 
     def startReading(self, *args, **kwargs):
         self.file = open(self.file_path, newline='')
-        self.file_reader = reader(self.acc_file)
+        self.file_reader = reader(self.file)
         file_header = next(self.file_reader)
 
     def stopReading(self, *args, **kwargs):
         pass
+        
 
