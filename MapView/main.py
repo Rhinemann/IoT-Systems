@@ -15,6 +15,9 @@ class MapViewApp(App):
         self.line_layer = None
         self.car_marker = None
 
+        # додати необхідні змінні
+        self.pothole_markers = []
+
     def on_start(self):
         """
         Встановлює необхідні маркери, викликає функцію для оновлення мапи
@@ -75,10 +78,23 @@ class MapViewApp(App):
         self.mapview.center_on(lat, lon)
 
     def set_pothole_marker(self, point):
-        """
-        Встановлює маркер для ями
-        :param point: GPS координати
-        """
+        if isinstance(point, dict):
+            lat = point.get("lat")
+            lon = point.get("lon")
+        else:
+            lat, lon = point
+
+        if lat is None or lon is None:
+            return
+
+        marker = MapMarker(
+            lat=lat,
+            lon=lon,
+            source="images/pothole.png"
+        )
+
+        self.mapview.add_marker(marker)
+        self.pothole_markers.append(marker)
 
     def set_bump_marker(self, point):
         """
