@@ -21,6 +21,20 @@ class MapViewApp(App):
         Викликається регулярно для оновлення мапи
         """
 
+    def check_road_quality(self, point):
+        """
+        Аналізує дані акселерометра для подальшого визначення
+        та відображення ям та лежачих поліцейських
+        """
+        if len(point) < 3:
+            return
+
+        lat, lon, road_state = point
+
+        if road_state == "pothole":
+            self.set_pothole_marker((lat, lon))
+        elif road_state == "bump":
+            self.set_bump_marker((lat, lon))
 
     def update_car_marker(self, point):
         """
