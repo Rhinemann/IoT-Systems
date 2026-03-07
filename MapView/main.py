@@ -27,6 +27,16 @@ class MapViewApp(App):
         Оновлює відображення маркера машини на мапі
         :param point: GPS координати
         """
+        lat, lon = point[0], point[1]
+
+        if not hasattr(self, 'car_marker'):
+            self.car_marker = MapMarker(lat=lat, lon=lon, source='./images/car')
+            self.mapview.add_marker(self.car_marker)
+        else:
+            self.car_marker.lat = lat
+            self.car_marker.lon = lon
+
+        self.mapview.center_on(lat, lon)
 
     def set_pothole_marker(self, point):
         """
