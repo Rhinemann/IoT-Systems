@@ -8,18 +8,40 @@ from datasource import Datasource
 
 class MapViewApp(App):
     def __init__(self, **kwargs):
-        super().__init__()
-        # додати необхідні змінні
+        super().__init__(**kwargs)
+
+        self.mapview = None
+        self.datasource = Datasource(user_id=1)
+        self.line_layer = None
+        self.car_marker = None
 
     def on_start(self):
         """
         Встановлює необхідні маркери, викликає функцію для оновлення мапи
         """
+        Clock.schedule_interval(self.update, 0.3)
 
     def update(self, *args):
         """
         Викликається регулярно для оновлення мапи
         """
+        new_points = self.datasource.get_new_points()
+
+        if not new_points:
+            return
+
+        for point in new_points:
+
+            lat, lon, road_state = point
+
+            # Оновлює лінію маршрута
+            self.line_layer.add_point((lat, lon))
+
+            # Оновлює маркер маниши
+            self.update_car_marker((lat, lon))
+
+            # Перевіряємо стан дороги
+            self.check_road_quality(point)
 
     def check_road_quality(self, point):
         """
@@ -69,7 +91,15 @@ class MapViewApp(App):
         Ініціалізує мапу MapView(zoom, lat, lon)
         :return: мапу
         """
-        self.mapview = MapView()
+        self.mapview = MapView(
+            zoom=15,
+            lat=50.4501,
+            lon=30.5234
+        )
+
+        self.line_layer = LineMapLayer()
+        self.mapview.add_layer(self.line_layer)
+
         return self.mapview
 
 
