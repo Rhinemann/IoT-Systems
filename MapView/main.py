@@ -16,13 +16,14 @@ class MapViewApp(App):
         self.car_marker = None
 
         # додати необхідні змінні
+        self.bump_markers = []
         self.pothole_markers = []
 
     def on_start(self):
         """
         Встановлює необхідні маркери, викликає функцію для оновлення мапи
         """
-        Clock.schedule_interval(self.update, 0.3)
+        Clock.schedule_once(lambda dt: self.set_bump_marker((50.4501, 30.5234)), 0)
 
     def update(self, *args):
         """
@@ -97,10 +98,24 @@ class MapViewApp(App):
         self.pothole_markers.append(marker)
 
     def set_bump_marker(self, point):
-        """
-        Встановлює маркер для лежачого поліцейського
-        :param point: GPS координати
-        """
+        if isinstance(point, dict):
+            lat = point.get("lat")
+            lon = point.get("lon")
+        else:
+            lat, lon = point
+
+        if lat is None or lon is None:
+            return
+        
+        marker = MapMarker(
+            lat=lat,
+            lon=lon,
+            source="images/bump.png"  
+        )
+
+        self.mapview.add_marker(marker)
+        self.bump_markers.append(marker)
+
 
     def build(self):
         """
