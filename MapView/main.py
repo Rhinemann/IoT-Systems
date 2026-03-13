@@ -23,7 +23,8 @@ class MapViewApp(App):
         """
         Встановлює необхідні маркери, викликає функцію для оновлення мапи
         """
-        Clock.schedule_once(lambda dt: self.set_bump_marker((50.4501, 30.5234)), 0)
+        self.update()
+        Clock.schedule_interval(self.update, 5)
 
     def update(self, *args):
         """
