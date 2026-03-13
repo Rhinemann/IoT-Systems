@@ -49,7 +49,7 @@ class MapViewApp(App):
 
             # Оновлює лінію маршрута
             if user_id not in self.line_layers:
-                self.line_layers[user_id] = LineMapLayer(color = line_layer_colors[user_id])
+                self.line_layers[user_id] = LineMapLayer(color = line_layer_colors[user_id % len(line_layer_colors)])
                 self.mapview.add_layer(self.line_layers[user_id])
 
             self.line_layers[user_id].add_point((lat, lon))
