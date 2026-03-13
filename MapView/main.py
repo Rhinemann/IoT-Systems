@@ -69,7 +69,7 @@ class MapViewApp(App):
         """
         lat, lon = point[0], point[1]
 
-        if not hasattr(self, 'car_marker'):
+        if not self.car_marker:
             self.car_marker = MapMarker(lat=lat, lon=lon, source='./images/car')
             self.mapview.add_marker(self.car_marker)
         else:
