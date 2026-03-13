@@ -5,6 +5,14 @@ from kivy.clock import Clock
 from lineMapLayer import LineMapLayer
 from datasource import Datasource
 
+line_layer_colors = [
+    [1, 0, 0, 1],
+    [1, 0.5, 0, 1],
+    [0, 1, 0, 1],
+    [0, 1, 1, 1],
+    [0, 0, 1, 1],
+    [1, 0, 1, 1],
+]
 
 class MapViewApp(App):
     def __init__(self, **kwargs):
@@ -12,8 +20,8 @@ class MapViewApp(App):
 
         self.mapview = None
         self.datasource = Datasource(user_id=1)
-        self.line_layer = None
-        self.car_marker = None
+        self.line_layers = dict()
+        self.car_markers = dict()
 
         # додати необхідні змінні
         self.bump_markers = []
@@ -37,13 +45,17 @@ class MapViewApp(App):
 
         for point in new_points:
 
-            lat, lon, road_state = point
+            lat, lon, road_state, user_id = point
 
             # Оновлює лінію маршрута
-            self.line_layer.add_point((lat, lon))
+            if user_id not in self.line_layers:
+                self.line_layers[user_id] = LineMapLayer(color = line_layer_colors[user_id])
+                self.mapview.add_layer(self.line_layers[user_id])
+
+            self.line_layers[user_id].add_point((lat, lon))
 
             # Оновлює маркер маниши
-            self.update_car_marker((lat, lon))
+            self.update_car_marker(lat, lon, user_id)
 
             # Перевіряємо стан дороги
             self.check_road_quality(point)
@@ -56,26 +68,24 @@ class MapViewApp(App):
         if len(point) < 3:
             return
 
-        lat, lon, road_state = point
+        lat, lon, road_state, user_id = point
 
         if road_state == "pothole":
             self.set_pothole_marker((lat, lon))
         elif road_state == "bump":
             self.set_bump_marker((lat, lon))
 
-    def update_car_marker(self, point):
+    def update_car_marker(self, lat, lon, user_id):
         """
         Оновлює відображення маркера машини на мапі
         :param point: GPS координати
         """
-        lat, lon = point[0], point[1]
-
-        if not self.car_marker:
-            self.car_marker = MapMarker(lat=lat, lon=lon, source='./images/car')
-            self.mapview.add_marker(self.car_marker)
+        if user_id not in self.car_markers:
+            self.car_markers[user_id] = MapMarker(lat=lat, lon=lon, source='./images/car.png')
+            self.mapview.add_marker(self.car_markers[user_id])
         else:
-            self.car_marker.lat = lat
-            self.car_marker.lon = lon
+            self.car_markers[user_id].lat = lat
+            self.car_markers[user_id].lon = lon
 
         self.mapview.center_on(lat, lon)
 
@@ -128,9 +138,6 @@ class MapViewApp(App):
             lat=50.4501,
             lon=30.5234
         )
-
-        self.line_layer = LineMapLayer()
-        self.mapview.add_layer(self.line_layer)
 
         return self.mapview
 

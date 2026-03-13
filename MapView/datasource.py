@@ -75,6 +75,7 @@ class Datasource:
                 processed_agent_data.latitude,
                 processed_agent_data.longitude,
                 processed_agent_data.road_state,
+                processed_agent_data.user_id
             )
             for processed_agent_data in processed_agent_data_list
         ]
