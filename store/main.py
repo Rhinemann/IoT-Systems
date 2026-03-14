@@ -40,10 +40,24 @@ subscriptions: Dict[int, Set[WebSocket]] = {}
 @app.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: int):
     await websocket.accept()
+
     if user_id not in subscriptions:
         subscriptions[user_id] = set()
+
     subscriptions[user_id].add(websocket)
+
     try:
+        # send already available data
+        r = processed_agent_data.select()
+        stored_data = SessionLocal().execute(r).fetchall()
+
+        jsonable_data = [{c.name: getattr(i, c.name) for c in processed_agent_data.columns} for i in stored_data]
+        for i in jsonable_data:
+            i['timestamp'] = i['timestamp'].strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        await websocket.send_json(json.dumps(jsonable_data))
+
+        # receive forever
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
