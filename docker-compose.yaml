@@ -4,9 +4,9 @@ services:
     image: eclipse-mosquitto
     container_name: mqtt
     volumes:
-      - ./mosquitto:/mosquitto
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - ./agent/docker/mosquitto:/mosquitto
+      - ./agent/docker/mosquitto/data:/mosquitto/data
+      - ./agent/docker/mosquitto/log:/mosquitto/log
     ports:
       - 1883:1883
       - 9001:9001
@@ -59,7 +59,7 @@ services:
       POSTGRES_DB: test_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db/structure.sql:/docker-entrypoint-initdb.d/structure.sql
+      - ./store/docker/db/structure.sql:/docker-entrypoint-initdb.d/structure.sql
     ports:
       - "5432:5432"
     networks:
