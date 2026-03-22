@@ -1,4 +1,4 @@
-name: "road_vision__hub"
+name: "road_vision"
 services:
   mqtt:
     image: eclipse-mosquitto
@@ -13,6 +13,41 @@ services:
     networks:
       mqtt_network:
 
+
+  fake_agent:
+    container_name: agent
+    build:
+      context: .
+      dockerfile: agent/Dockerfile
+    depends_on:
+      - mqtt
+    environment:
+      MQTT_BROKER_HOST: "mqtt"
+      MQTT_BROKER_PORT: 1883
+      MQTT_TOPIC: "agent_data_topic"
+      DELAY: 0.1
+    networks:
+      mqtt_network:
+
+  edge:
+    container_name: edge
+    build:
+      context: .
+      dockerfile: edge/Dockerfile
+    depends_on:
+      - mqtt
+    environment:
+      MQTT_BROKER_HOST: "mqtt"
+      MQTT_BROKER_PORT: 1883
+      MQTT_TOPIC: " "
+      HUB_HOST: "store"
+      HUB_PORT: 8000
+      HUB_MQTT_BROKER_HOST: "mqtt"
+      HUB_MQTT_BROKER_PORT: 1883
+      HUB_MQTT_TOPIC: "processed_data_topic"
+    networks:
+      mqtt_network:
+      edge_hub:
 
   postgres_db:
     image: postgres:17
@@ -29,7 +64,6 @@ services:
       - "5432:5432"
     networks:
       db_network:
-
 
   pgadmin:
     container_name: pgadmin4
@@ -49,7 +83,7 @@ services:
   store:
     container_name: store
     build:
-      context: ../../
+      context: .
       dockerfile: store/Dockerfile
     depends_on:
       - postgres_db
@@ -79,7 +113,7 @@ services:
   hub:
     container_name: hub
     build:
-      context: ../../
+      context: .
       dockerfile: hub/Dockerfile
     depends_on:
       - mqtt
@@ -101,10 +135,11 @@ services:
       hub_store:
       hub_redis:
 
-
 networks:
   mqtt_network:
   db_network:
+  edge_hub:
+  hub:
   hub_store:
   hub_redis:
 
