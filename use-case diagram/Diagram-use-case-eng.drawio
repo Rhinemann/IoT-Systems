@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36" version="29.6.4">
+  <diagram name="Сторінка-1" id="_YSlPe8mcj5-9grd_ef3">
+    <mxGraphModel dx="2066" dy="1103" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ms8RoOmij1GY3FRpAohl-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Sensor Agent (Device/STM32/Emulator)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="260" x="810" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="870" width="1170" x="340" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-4" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;IoT-Systems&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="150" x="859.27" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;&amp;lt;include&amp;gt;&amp;gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="1100" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;&amp;lt;include&amp;gt;&amp;gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="720" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;The user is the card operator&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="160" x="110" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-39" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;Collect telemetry (accelerometer + GPS)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="110" width="340" x="400" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-40" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;Send telemetry&lt;/span&gt;" vertex="1">
+          <mxGeometry height="90" width="310" x="1110" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-41" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;Process telemetry&lt;/span&gt;" vertex="1">
+          <mxGeometry height="90" width="310" x="830" y="432" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-42" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;Determine road condition (pothole / bump / normal)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="108" width="330" x="460" y="522" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-45" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;View road defect marks&lt;/span&gt;" vertex="1">
+          <mxGeometry height="90" width="310" x="720" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-46" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;font-size: 17px;&quot;&gt;View route on map&lt;/span&gt;" vertex="1">
+          <mxGeometry height="90" width="310" x="720" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-48" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-39" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="ms8RoOmij1GY3FRpAohl-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="800" y="200" as="sourcePoint" />
+            <mxPoint x="850" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-49" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-40" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.973;entryY=0.982;entryDx=0;entryDy=0;entryPerimeter=0;" target="ms8RoOmij1GY3FRpAohl-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1290" y="230" as="sourcePoint" />
+            <mxPoint x="1100" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-50" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-20" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" target="ms8RoOmij1GY3FRpAohl-45" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="310" y="827.5" as="sourcePoint" />
+            <mxPoint x="430" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-51" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-20" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" target="ms8RoOmij1GY3FRpAohl-46" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="333.03999999999996" y="892.9499999999998" as="sourcePoint" />
+            <mxPoint x="410" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-52" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-53" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.087;entryY=0.833;entryDx=0;entryDy=0;entryPerimeter=0;" target="ms8RoOmij1GY3FRpAohl-40" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="760" y="295" as="sourcePoint" />
+            <mxPoint x="1160" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-53" parent="1" style="triangle;whiteSpace=wrap;html=1;rotation=135;" value="" vertex="1">
+          <mxGeometry height="30" width="25" x="984.27" y="402" as="geometry" />
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-59" edge="1" parent="1" source="ms8RoOmij1GY3FRpAohl-60" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="676" y="579" as="sourcePoint" />
+            <mxPoint x="830" y="471" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ms8RoOmij1GY3FRpAohl-60" parent="1" style="triangle;whiteSpace=wrap;html=1;rotation=135;" value="" vertex="1">
+          <mxGeometry height="30" width="25" x="749.9954364826301" y="521.99543648263" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
