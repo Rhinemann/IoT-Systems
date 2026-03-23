@@ -28,6 +28,7 @@ def publish(client, topic, datasource):
         data = datasource.read()
         msg = AggregatedDataSchema().dumps(data)
         result = client.publish(topic, msg)
+        print(f"Published to {topic}: {msg[:50]}...")
         status = result[0]
         if status != 0:
             print(f"Failed to send message to topic {topic}")

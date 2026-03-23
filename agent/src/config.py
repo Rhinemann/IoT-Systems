@@ -8,7 +8,7 @@ def try_parse(type, value: str):
         return None
 
 
-USER_ID = 1
+USER_ID = try_parse(int, os.environ.get("USER_ID")) or 1
 # MQTT config
 MQTT_BROKER_HOST = os.environ.get("MQTT_BROKER_HOST") or "mqtt"
 MQTT_BROKER_PORT = try_parse(int, os.environ.get("MQTT_BROKER_PORT")) or 1883
