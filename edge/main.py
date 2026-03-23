@@ -3,6 +3,7 @@ import os
 from app.adapters.agent_mqtt_adapter import AgentMQTTAdapter
 from app.adapters.hub_http_adapter import HubHttpAdapter
 from app.adapters.hub_mqtt_adapter import HubMqttAdapter
+from threading import Event
 from config import (
     MQTT_BROKER_HOST,
     MQTT_BROKER_PORT,
@@ -24,6 +25,9 @@ if __name__ == "__main__":
             logging.FileHandler("app.log"),
         ],
     )
+
+    # Initialize the stop event to prevent high CPU usage
+    stop_event = Event()
 
     # Logic to select the adapter based on configuration (SCRUM-93 & SCRUM-94)
     # This allows easy switching between HTTP and MQTT protocols
@@ -55,10 +59,14 @@ if __name__ == "__main__":
         agent_adapter.connect()
         agent_adapter.start()
 
-        # Keep the system running indefinitely to process incoming data streams
-        while True:
-            pass
+        logging.info("Edge module started successfully. Waiting for data...")
+
+        # Block the main thread efficiently without consuming CPU cycles
+        stop_event.wait()
+
     except KeyboardInterrupt:
         # Stop the MQTT adapter and exit gracefully if interrupted by the user
+        logging.info("Stop signal received. Shutting down...")
         agent_adapter.stop()
+        stop_event.set()  # Release the event
         logging.info("System stopped.")
