@@ -33,16 +33,13 @@ class AgentMQTTAdapter(AgentGateway):
         """Processing agent data and sent it to hub gateway"""
         try:
             payload: str = msg.payload.decode("utf-8")
-            # Create AgentData instance with the received data
+
             agent_data = AgentData.model_validate_json(payload, strict=True)
-            # Process the received data (you can call a use case here if needed)
             processed_data = process_agent_data(agent_data)
-            # Attempt to send processed data to the Hub gateway
+
             if self.hub_gateway.save_data(processed_data):
-                # Log successful transmission as INFO level
                 logging.info("Processed data successfully forwarded to the Hub.")
             else:
-                # Log Hub unavailability or transmission failure as ERROR level
                 logging.error("Failed to send data: Hub gateway is unavailable.")
         except Exception as e:
             logging.info(f"Error processing MQTT message: {e}")
