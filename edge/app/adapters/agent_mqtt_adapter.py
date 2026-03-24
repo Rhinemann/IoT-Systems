@@ -13,9 +13,7 @@ class AgentMQTTAdapter(AgentGateway):
         broker_port,
         topic,
         hub_gateway: HubGateway,
-        batch_size=10,
     ):
-        self.batch_size = batch_size
         # MQTT
         self.broker_host = broker_host
         self.broker_port = broker_port
