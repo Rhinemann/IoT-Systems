@@ -26,15 +26,8 @@ class AgentGateway(ABC):
         pass
 
     @abstractmethod
-    def start(self):
+    def loop_forever(self):
         """
-        Method to start listening for messages from the agent.
-        """
-        pass
-
-    @abstractmethod
-    def stop(self):
-        """
-        Method to stop the agent gateway and clean up resources.
+        Method to await for new messages.
         """
         pass
