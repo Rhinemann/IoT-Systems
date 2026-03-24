@@ -3,7 +3,6 @@ import os
 from app.adapters.agent_mqtt_adapter import AgentMQTTAdapter
 from app.adapters.hub_http_adapter import HubHttpAdapter
 from app.adapters.hub_mqtt_adapter import HubMqttAdapter
-from threading import Event
 from config import (
     MQTT_BROKER_HOST,
     MQTT_BROKER_PORT,
@@ -25,9 +24,6 @@ if __name__ == "__main__":
             logging.FileHandler("app.log"),
         ],
     )
-
-    # Initialize the stop event to prevent high CPU usage
-    stop_event = Event()
 
     # Logic to select the adapter based on configuration (SCRUM-93 & SCRUM-94)
     # This allows easy switching between HTTP and MQTT protocols
@@ -54,19 +50,12 @@ if __name__ == "__main__":
     )
 
     try:
-        logging.info(f"Starting Edge module. Connecting to Agent Broker at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
-        # Connect to the MQTT broker and start listening for messages from Agent
+        logging.info(f"Connecting to MQTT broker at {MQTT_BROKER_HOST}:{MQTT_BROKER_PORT}")
         agent_adapter.connect()
-        agent_adapter.start()
 
-        logging.info("Edge module started successfully. Waiting for data...")
-
-        # Block the main thread efficiently without consuming CPU cycles
-        stop_event.wait()
-
+        logging.info("Broker connection success. Waiting for data...")
+        agent_adapter.loop_forever()
     except KeyboardInterrupt:
-        # Stop the MQTT adapter and exit gracefully if interrupted by the user
-        logging.info("Stop signal received. Shutting down...")
-        agent_adapter.stop()
-        stop_event.set()  # Release the event
-        logging.info("System stopped.")
+        logging.info("Interrupt signal received. Shutting down...")
+        agent_adapter.disconnect()
+        logging.info("Disconnected from MQTT broker.")
