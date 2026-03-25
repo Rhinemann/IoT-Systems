@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Accelerometer:
-    x: int
-    y: int
-    z: int
+    x: float
+    y: float
+    z: float
