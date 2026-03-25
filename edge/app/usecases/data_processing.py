@@ -15,19 +15,18 @@ def process_agent_data(
         processed_data_batch (ProcessedAgentData): Processed data containing the classified state of the road surface and agent data.
     """
     user_id = agent_data.user_id
+    road_state = "normal"
 
     curr_time = time.time()
     last_processed_time = _last_processed_times.get(user_id, 0)
-    if curr_time - last_processed_time < 1.0: 
-        return None
+    
+    if curr_time - last_processed_time > 1.0: 
+        if agent_data.accelerometer.z < -1.0:
+            road_state = "pothole"
+        elif agent_data.accelerometer.z > 1.0:
+            road_state = "bump"
+
     _last_processed_times[user_id] = curr_time
-
-    road_state = "normal"
-
-    if agent_data.accelerometer.z < -1.0:
-        road_state = "pothole"
-    elif agent_data.accelerometer.z > 1.0:
-        road_state = "bump"
 
     return ProcessedAgentData(
         road_state=road_state,
