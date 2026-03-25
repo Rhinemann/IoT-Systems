@@ -1,8 +1,7 @@
-import time
 from app.entities.agent_data import AgentData
 from app.entities.processed_agent_data import ProcessedAgentData
 
-_last_processed_times = {}
+_last_detection_state = {}
 
 def process_agent_data(
     agent_data: AgentData,
@@ -17,16 +16,19 @@ def process_agent_data(
     user_id = agent_data.user_id
     road_state = "normal"
 
-    curr_time = time.time()
-    last_processed_time = _last_processed_times.get(user_id, 0)
-    
-    if curr_time - last_processed_time > 1.0: 
-        if agent_data.accelerometer.z < -1.0:
-            road_state = "pothole"
-        elif agent_data.accelerometer.z > 1.0:
-            road_state = "bump"
+    last_detection_state = _last_detection_state.get(user_id, False)
 
-    _last_processed_times[user_id] = curr_time
+    if (agent_data.accelerometer.z < 0.6):
+        road_state = "pothole"
+    elif (agent_data.accelerometer.z > 1.2):
+        road_state = "bump"
+
+    detection_happened = road_state != "normal"
+
+    if not (not last_detection_state and detection_happened):
+        road_state = "normal"
+
+    _last_detection_state[user_id] = detection_happened
 
     return ProcessedAgentData(
         road_state=road_state,
