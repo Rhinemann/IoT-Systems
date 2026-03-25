@@ -15,6 +15,7 @@ class FileDatasource:
 
     def __init__(
             self,
+            acc_divisor: float,
             accelerometer_filename: str,
             gps_filename: str,
             park_filename: str,
@@ -33,6 +34,8 @@ class FileDatasource:
         self._gps_reader: Optional[csv.reader] = None
 
         self._started = False
+
+        self.acc_divisor = acc_divisor
 
     def startReading(self, *args, **kwargs):
         """Must be called before read()"""
@@ -160,15 +163,14 @@ class FileDatasource:
 
             return row
 
-    @staticmethod
-    def _parse_acc(row: List[str]) -> Accelerometer:
+    def _parse_acc(self, row: List[str]) -> Accelerometer:
         if len(row) < 3:
             raise ValueError(f"Accelerometer row must have 3 values (x,y,z). Got: {row}")
 
         try:
-            x = int(row[0])
-            y = int(row[1])
-            z = int(row[2])
+            x = int(row[0]) / self.acc_divisor
+            y = int(row[1]) / self.acc_divisor
+            z = int(row[2]) / self.acc_divisor
         except ValueError as e:
             raise ValueError(f"Invalid accelerometer values (expected integers): {row}") from e
 
