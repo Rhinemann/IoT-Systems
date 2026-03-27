@@ -15,7 +15,7 @@ def test_create_processed_agent_data():
         "user_id": 123,
         "data": [
             {
-                "road_state": "good",
+                "road_state": "normal",
                 "agent_data": {
                     "user_id": 999, 
                     "accelerometer": {
