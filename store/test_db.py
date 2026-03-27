@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
-from .main import app, processed_agent_data
-from .database import SessionLocal
+from main import app, processed_agent_data
+from database import SessionLocal
 from sqlalchemy import select
 from datetime import datetime
 

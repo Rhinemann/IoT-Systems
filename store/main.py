@@ -12,8 +12,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import select
 
-from .database import metadata, SessionLocal
-from .schemas import ProcessedAgentData, ProcessedAgentDataInDB
+from database import metadata, SessionLocal
+from schemas import ProcessedAgentData, ProcessedAgentDataInDB
 
 # FastAPI app setup
 app = FastAPI()
